@@ -94,8 +94,8 @@
         // Prepare heatmap data
         var heatmapData = [];
         for (var i = 0; i < data.length; i++) {
-          var lat = parseFloat(data[i].latitude);
-          var lng = parseFloat(data[i].longitude);
+          var lat = parseFloat(data[i].Latitude);
+          var lng = parseFloat(data[i].Longitude);
           var intensity = parseFloat(data[i].intensity);
 
           if (!isNaN(lat) && !isNaN(lng) && !isNaN(intensity)) {
