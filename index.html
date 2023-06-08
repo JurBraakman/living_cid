@@ -77,7 +77,37 @@
       scrollWheelZoom: false,
       tap: false
     }).setView([41.76,-72.69], 11); // default center is overridden by Google Sheet options and points
+   // Load data from Google Sheet using PapaParse
+    var googleSheetUrl = 'https://docs.google.com/spreadsheets/d/1IbeFasUrnwhZYQuKAWHsh1YJBhhi2Wp3jwj6Y-wE59s/edit#gid=164271551';
+    Papa.parse(googleSheetUrl, {
+      download: true,
+      header: true,
+      complete: function(results) {
+        var data = results.data;
+
+        // Prepare heatmap data
+        var heatmapData = [];
+        for (var i = 0; i < data.length; i++) {
+          var lat = parseFloat(data[i].latitude);
+          var lng = parseFloat(data[i].longitude);
+          var intensity = parseFloat(data[i].intensity);
+
+          if (!isNaN(lat) && !isNaN(lng) && !isNaN(intensity)) {
+            heatmapData.push([lat, lng, intensity]);
+          }
+        }
+
+        // Create heatmap layer
+        var heat = L.heatLayer(heatmapData, { radius: 25 }).addTo(map);
+
+        // Fit the map to the bounds of the heatmap layer
+        map.fitBounds(heat.getBounds());
+      }
+    });
   </script>
+
+ 
+
 
   <script type="text/javascript" src="./google-doc-url.js"></script>
   <script type="text/javascript" src="./scripts/constants.js"></script>
