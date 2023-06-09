@@ -34,6 +34,10 @@
 
   <!-- leaflet-providers-->
   <script src="https://unpkg.com/leaflet-providers@1.10.2/leaflet-providers.js"></script>
+  
+  <!-- Leaflet.Label -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/leaflet.label/0.2.4/leaflet.label.css">
+  <script src="https://cdn.jsdelivr.net/leaflet.label/0.2.4/leaflet.label.js"></script>
 
   <!-- Leaflet.awesome-markers v2.0.4, manually updated to svg to allow hex and material icons -->
   <link rel="stylesheet" type="text/css" href="scripts/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css">
@@ -91,23 +95,25 @@
       complete: function(results) {
         var data = results.data;
 
-        // Prepare heatmap data
-        var heatmapData = [];
+          // Create a marker cluster group
+        var markerCluster = L.markerClusterGroup();
+
         for (var i = 0; i < data.length; i++) {
           var lat = parseFloat(data[i].Latitude);
           var lng = parseFloat(data[i].Longitude);
           var intensity = parseFloat(data[i].intensity);
 
           if (!isNaN(lat) && !isNaN(lng) && !isNaN(intensity)) {
-            heatmapData.push([lat, lng, intensity]);
+            // Create a marker with a label
+            var marker = L.marker([lat, lng]).bindLabel(data[i].Description);
+
+            // Add the marker to the cluster group
+            markerCluster.addLayer(marker);
           }
         }
 
-        // Create heatmap layer
-        var heat = L.heatLayer(heatmapData, { radius: 25 }).addTo(map);
-
-        // Fit the map to the bounds of the heatmap layer
-        map.fitBounds(heat.getBounds());
+        // Add the marker cluster group to the map
+        map.addLayer(markerCluster);
       }
     });
   </script>
